@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>أسئلة اختبار دراق</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9)),
+                  url("https://www.raed.net/img?id=1376777") no-repeat center center fixed;
+      background-size: cover;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      color: white;
+      font-family: 'Cairo', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+    }
+    .question-box {
+      max-width: 750px;
+      background: rgba(0,0,0,0.75);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 0 30px #ff7b00;
+      margin: 20px;
+      animation: fadeIn 1.5s ease;
+    }
+    .question {
+      font-size: 26px;
+      margin-bottom: 30px;
+      color: #ff7b00;
+      text-shadow: 0 0 10px #ff7b00;
+    }
+    .options {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+    .options button {
+      background: #111;
+      color: white;
+      border: 2px solid #ff7b00;
+      border-radius: 12px;
+      padding: 12px 20px;
+      cursor: pointer;
+      transition: 0.3s;
+      flex: 1 1 calc(45% - 10px);
+      min-width: 140px;
+      font-size: 18px;
+    }
+    .options button:hover {
+      background: #ff7b00;
+      color: black;
+    }
+    #nextBtn {
+      padding: 12px 35px;
+      font-size: 20px;
+      background: #ff7b00;
+      color: black;
+      border: none;
+      border-radius: 10px;
+      margin-top: 25px;
+      cursor: pointer;
+      display: none;
+      box-shadow: 0 0 20px #ff7b00;
+    }
+    .result {
+      font-size: 28px;
+      margin-top: 20px;
+      display: none;
+      color: #ff7b00;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<div class="question-box">
+  <div class="question" id="question"></div>
+  <div class="options" id="options"></div>
+  <button id="nextBtn" onclick="nextQuestion()">التالي</button>
+</div>
+<div class="result" id="result"></div>
+
+<script>
+const questions = [
+  { q: "ما هو الهدف من تركيب NOS في سيارة الدراق؟", o: ["خفض الحرارة", "زيادة التسارع", "تحسين الصوت"], a: 1 },
+  { q: "أي نوع من الإطارات يستخدم عادة في سباقات الدراق؟", o: ["Radial", "Drag slicks", "Offroad"], a: 1 },
+  { q: "ما وظيفة التيربو؟", o: ["زيادة استهلاك الوقود", "زيادة ضغط الهواء في المحرك", "تقليل الضوضاء"], a: 1 },
+  { q: "في الدراق، كم عادةً تكون المسافة الرسمية للسباق؟", o: ["1 كلم", "400 متر", "2 ميل"], a: 1 },
+  { q: "وش أفضل وسيلة لتقليل وزن السيارة؟", o: ["إزالة الكراسي الخلفية", "زيادة حجم المحرك", "طلاء خفيف"], a: 0 },
+  { q: "ما الفائدة الأساسية من الإطارات السليك (Slicks)؟", o: ["راحة القيادة", "ثبات على السرعات العالية", "تحكم في المنعطفات"], a: 1 },
+  { q: "ما دور الفلتر الهوائي الرياضي؟", o: ["يزيد استهلاك البنزين", "يحسن دخول الهواء للمحرك", "يقلل من صوت المحرك"], a: 1 },
+  { q: "ما وظيفة الكلتش الرياضي في سيارات السباق؟", o: ["تزيين المحرك", "تسريع تغيير السرعات", "تثبيت الإطارات"], a: 1 },
+  { q: "أي نوع من الوقود يعطي قوة انفجار أعلى؟", o: ["ديزل", "إيثانول", "وقود سباق مخصص"], a: 2 },
+  { q: "وش يسوي داينو تيون؟", o: ["يقيس وزن السيارة", "يضبط أداء المحرك", "يغير لون السيارة"], a: 1 },
+  { q: "في أي جزء تركب التيربو؟", o: ["العادم", "المكابح", "الهيكل"], a: 0 },
+  { q: "ما هو المعنى العام لكلمة '1320' في دراق؟", o: ["عدد الأحصنة", "قدم في الميل الربع", "ضغط التيربو"], a: 1 },
+  { q: "ما وظيفة الجناح الخلفي في سيارات السباق؟", o: ["يزيد الجمالية", "يحسن الثبات الخلفي", "يقلل الحرارة"], a: 1 },
+  { q: "ما أخطر عيب في إطارات قديمة في دراق؟", o: ["قلة الثبات", "الوزن الزائد", "ضعف الأداء الصوتي"], a: 0 },
+  { q: "أين يتم ضبط ضغط الإطارات؟", o: ["من الحاسوب", "من مضخة هواء", "من مقياس الصوت"], a: 1 },
+  { q: "ما هو 'رد تايم' في سباقات الدراق؟", o: ["زمن الاستجابة عند الإشارة", "زمن التسارع الكلي", "زمن المكابح"], a: 0 },
+  { q: "ما هو 'Burnout'؟", o: ["تشغيل مكيف السيارة قبل السباق", "تسخين الإطارات بالحرق", "استخدام NOS"], a: 1 },
+  { q: "وش يسوي الهيدروليك في سيارات السباق؟", o: ["يرفع الهيكل", "يضبط التعليق", "يزيد التسارع"], a: 1 },
+  { q: "وش وظيفة Line Lock؟", o: ["إغلاق المكابح الخلفية", "حرق الإطارات الخلفية فقط", "قفل الأبواب"], a: 1 },
+  { q: "أقوى نوع انطلاق في الدراق؟", o: ["AWD", "FWD", "RWD"], a: 2 }
+];
+
+let current = 0;
+let score = 0;
+
+function showQuestion() {
+  document.getElementById('nextBtn').style.display = 'none';
+  const q = questions[current];
+  document.getElementById('question').innerText = `السؤال ${current + 1} من ${questions.length}: ${q.q}`;
+  const options = document.getElementById('options');
+  options.innerHTML = '';
+  q.o.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.innerText = opt;
+    btn.onclick = () => checkAnswer(i, btn);
+    options.appendChild(btn);
+  });
+}
+
+function checkAnswer(selected, btn) {
+  const correct = questions[current].a;
+  const allButtons = document.querySelectorAll('.options button');
+  allButtons.forEach(b => b.disabled = true);
+  if (selected === correct) {
+    btn.style.background = '#0f0';
+    score++;
+  } else {
+    btn.style.background = '#f00';
+    allButtons[correct].style.background = '#0f0';
+  }
+  document.getElementById('nextBtn').style.display = 'inline-block';
+}
+
+function nextQuestion() {
+  current++;
+  if (current < questions.length) {
+    showQuestion();
+  } else {
+    document.querySelector('.question-box').style.display = 'none';
+    const resultText = `نتيجتك: ${score} من ${questions.length}`;
+    document.getElementById('result').innerText = resultText;
+    document.getElementById('result').style.display = 'block';
+  }
+}
+
+showQuestion();
+</script>
+</body>
+</html>
